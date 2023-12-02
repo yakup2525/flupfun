@@ -1,6 +1,7 @@
 # flupfun
 
-A new Flutter project.
+# live 
+https://play.google.com/store/apps/details?id=com.kurtizi.flupfun
 
 ## Getting Started
 
