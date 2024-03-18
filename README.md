@@ -1,4 +1,4 @@
-# flupfun
+# flupfun (Flutter Game Project)
 
 # live 
 https://play.google.com/store/apps/details?id=com.kurtizi.flupfun
