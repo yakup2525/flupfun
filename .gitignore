@@ -10,7 +10,8 @@
 .history
 .svn/
 migrate_working_dir/
-
+.lock
+.xcconfig
 # IntelliJ related
 *.iml
 *.ipr
