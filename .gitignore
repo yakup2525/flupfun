@@ -44,3 +44,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#for actions
+keyPropsBase64
+keystoreBase64
+pubspec.lock
+*.base64
+service-account.json
