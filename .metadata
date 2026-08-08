@@ -4,7 +4,7 @@
 # This file should be version controlled.
 
 version:
-  revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
+  revision: 6b182d2c7585eba26d4edce0f97630effd256c33
   channel: stable
 
 project_type: app
@@ -13,14 +13,14 @@ project_type: app
 migration:
   platforms:
     - platform: root
-      create_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
-      base_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
+      create_revision: 6b182d2c7585eba26d4edce0f97630effd256c33
+      base_revision: 6b182d2c7585eba26d4edce0f97630effd256c33
     - platform: android
-      create_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
-      base_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
+      create_revision: 6b182d2c7585eba26d4edce0f97630effd256c33
+      base_revision: 6b182d2c7585eba26d4edce0f97630effd256c33
     - platform: ios
-      create_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
-      base_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
+      create_revision: 6b182d2c7585eba26d4edce0f97630effd256c33
+      base_revision: 6b182d2c7585eba26d4edce0f97630effd256c33
     - platform: linux
       create_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
       base_revision: f468f3366c26a5092eb964a230ce7892fda8f2f8
