@@ -37,8 +37,12 @@ Use a published and available version before increasing the minimum. Compare use
 - Final signed AAB: `build/app/outputs/bundle/release/app-release.aab`.
 - Artifact checks: package/version correct, production App ID in manifest, production unit in all three libapp.so ABIs, no Google demo publisher in manifest/libapp.so, no advertising ID/AdServices permissions; `jarsigner -verify` reports jar verified. The AAB certificate matches the configured existing release keystore (SHA-256 CF:F0:1F:A0:09:98:6C:99:2C:27:66:AA:21:0F:CE:2B:1B:CB:DA:BD:96:1F:EA:20:D5:E8:42:7D:81:F7:08:08); it was not independently compared with Play Console. Self-signed Android upload certificate is expected.
 
-## Publication blockers
+## Publication state (October 27, 2026)
 
-Website privacy/update assets are committed in a separate clone; remote push was blocked by automatic approval review. Until deployment is approved, the new first-party policy and update JSON are not live. Existing website check/build/lint/validate pass; supplemental audit reports only pre-existing Ghost Runner external-link attributes, left untouched.
+Website commit `5afc4ef` was pushed normally to origin/main and deployed through the existing Cloudflare Workers workflow (deployment `dce3ac44-d959-4587-8d1c-77fc119ea454`). Production home and Flup Fun policy return HTTP 200; app-ads.txt returns 200 text/plain with the existing publisher line. The minimum-version endpoint returns 1.1.8. No unrelated product pages were changed.
 
-Keep Play Managed Publishing enabled. Do not make a reviewed production release live without owner approval.
+Play public support and website metadata were published. Ads and policy declarations are saved for review. Data Safety was reviewed against Google's Mobile Ads 25.5.0 disclosure: approximate location, app interactions, diagnostics, device/other IDs; collected/shared, required, non-ephemeral; advertising, analytics and fraud/security purposes. Advertising ID remains No because the final manifest removes AD_ID/AdServices permissions and the child treatment suppresses advertising ID collection.
+
+Google Play accepted the signed AAB as version 9 (1.1.8). Production release metadata is prepared. Managed Publishing remains enabled. Submission is blocked pending the children's legal compliance acknowledgment: automatic approval review requires action-time owner confirmation before checking the COPPA/GDPR attestation. No submission or final publication is claimed.
+
+AdMob remains linked to Play with the existing Round Break interstitial and 2/60 cap. European and US messages are published. App readiness/app-ads verification remains external/pending; no repeated rescan was requested.
