@@ -33,9 +33,9 @@ Use a published and available version before increasing the minimum. Compare use
 
 - `flutter analyze`: no issues.
 - `flutter test`: seven tests pass, covering pacing, cooldown/session cap, minimum-version below/equal/above, malformed versions, offline first launch, cached offline enforcement, corrupt cache recovery, package store URL.
-- Android emulator: official test-device ad requests, child flow without consent solicitation, Settings/policy/support navigation, round completion, background/resume. Full EEA adult accept/decline/manage paths are inapplicable to the all-child-treated release; no forced geography or test-device overrides in source.
+- Android emulator: official test-device ad requests, child flow without consent solicitation, Settings navigation, round completion, background/resume. After the real grace period and ten rounds, the official Google interstitial test ad displayed at Play Again; dismissal returned to tap-to-play, cleared the fullscreen lock, reset pacing, and started preload. No timing or version overrides were added. External policy/support destination handling and mandatory-screen/store-failure UI were not exercised end to end. Full EEA adult accept/decline/manage paths are inapplicable to the all-child-treated release; no forced geography or test-device overrides in source.
 - Final signed AAB: `build/app/outputs/bundle/release/app-release.aab`.
-- Artifact checks: package/version correct, production App ID in manifest, production unit in all three libapp.so ABIs, no Google demo publisher in manifest/libapp.so, no advertising ID/AdServices permissions; `jarsigner -verify` reports jar verified. Self-signed Android upload certificate is expected.
+- Artifact checks: package/version correct, production App ID in manifest, production unit in all three libapp.so ABIs, no Google demo publisher in manifest/libapp.so, no advertising ID/AdServices permissions; `jarsigner -verify` reports jar verified. The AAB certificate matches the configured existing release keystore (SHA-256 CF:F0:1F:A0:09:98:6C:99:2C:27:66:AA:21:0F:CE:2B:1B:CB:DA:BD:96:1F:EA:20:D5:E8:42:7D:81:F7:08:08); it was not independently compared with Play Console. Self-signed Android upload certificate is expected.
 
 ## Publication blockers
 
