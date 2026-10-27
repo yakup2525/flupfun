@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import '/ui/ui.dart';
+import '../../services/monetization_service.dart';
+import '../settings/settings_page.dart';
 import '/core/core.dart';
 
 //
@@ -14,7 +16,12 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  Timer? _gameTimer;
+  Timer? _pointTimer;
+  bool _paused = false;
+  bool _dead = false;
+  bool _restarting = false;
   // bird variables
   static double birdY = 0;
   double initialPos = birdY;
@@ -48,6 +55,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     readScore();
   }
 
@@ -61,15 +69,17 @@ class _HomePageState extends State<HomePage> {
   Future<void> readScore() async {
     final box = await Hive.openBox<int>(boxName);
     best = box.get('score', defaultValue: 0) ?? 0;
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void startGame() {
+    if (_restarting || MonetizationService.instance.fullscreen) return;
     player.play(AssetSource('sound/jump.mp3'));
 
     gameHasStarted = true;
     scorePermission = true;
-    Timer.periodic(const Duration(milliseconds: 10), (timer) {
+    _gameTimer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      if (!mounted || _paused) return;
       // a real physical jump is the same as an upside down parabola
       // so this is a simple quadratic equation
       height = gravity * time * time + velocity * time;
@@ -81,7 +91,12 @@ class _HomePageState extends State<HomePage> {
       // check if bird is dead
       if (birdIsDead()) {
         timer.cancel();
+        _dead = true;
+        scorePermission = false;
+        _pointTimer?.cancel();
+        MonetizationService.instance.completedRound();
         _showDialog();
+        return;
       }
 
       // keep the map moving (move barriers)
@@ -106,8 +121,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void resetGame() {
-    Navigator.pop(context); // dismisses the alert dialog
+  Future<void> resetGame() async {
+    if (_restarting) return;
+    _restarting = true;
+    await MonetizationService.instance.betweenRounds();
+    if (!mounted) return;
+    Navigator.pop(context);
+    _restarting = false;
+    _dead = false;
+    isScoreUpped = false;
     setState(() {
       score = 0;
       birdY = 0;
@@ -120,10 +142,12 @@ class _HomePageState extends State<HomePage> {
 
   void _showDialog() {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
             backgroundColor: ColorConst.dialogColor,
             title: const Center(
               child: Text(
@@ -145,15 +169,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   void jump() async {
     await playJump();
 
+    if (!mounted || _paused || _dead) return;
     setState(() {
       time = 0;
       initialPos = birdY;
@@ -198,8 +225,8 @@ class _HomePageState extends State<HomePage> {
             barrierX[i] + barrierWidth >= -birdWidth) {
           isScoreUpped = true;
 
-          Future.delayed(const Duration(milliseconds: 1800), () {
-            if (scorePermission != false) {
+          _pointTimer = Timer(const Duration(milliseconds: 1800), () {
+            if (mounted && !_paused && scorePermission != false) {
               score++;
               playerPoint.play(AssetSource('sound/sfx_point.wav'), volume: 0.1);
 
@@ -216,6 +243,22 @@ class _HomePageState extends State<HomePage> {
     }
 
     return false;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _paused = state != AppLifecycleState.resumed;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _gameTimer?.cancel();
+    _pointTimer?.cancel();
+    for (final audio in [player, player2, player3, playerPoint, playerDeath]) {
+      audio.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -237,7 +280,7 @@ class _HomePageState extends State<HomePage> {
                         birdY: birdY,
                         birdWidth: birdWidth,
                         birdHeight: birdHeight,
-                        bird: !birdIsDead()
+                        bird: !_dead
                             ? ImageConstant.bird
                             : ImageConstant.birdCrash,
                       ),
@@ -276,6 +319,22 @@ class _HomePageState extends State<HomePage> {
                         barrierHeight: barrierHeight[1][1],
                         isThisBottomBarrier: true,
                       ),
+                      if (!gameHasStarted)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: SafeArea(
+                            child: IconButton(
+                              tooltip: 'Settings',
+                              icon: const Icon(Icons.settings),
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const SettingsPage(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

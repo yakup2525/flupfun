@@ -25,7 +25,7 @@ OUTPUT_FILE="${OUTPUT_DIR}/${APP_NAME}-${DATE}-v${VERSION}.aab"
 
 echo "Release AAB derleniyor..."
 flutter pub get
-flutter build appbundle --release
+flutter build appbundle --release --dart-define-from-file=config/ads.production.json
 
 if [[ ! -f "${AAB_SOURCE}" ]]; then
   echo "AAB dosyasi olusturulamadi: ${AAB_SOURCE}"

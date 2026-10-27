@@ -50,9 +50,13 @@ app.*.map.json
 #for actions
 keyPropsBase64
 keystoreBase64
-pubspec.lock
 *.base64
 service-account.json
 
 # Local deploy outputs
 /deploy/
+
+# Private signing and credentials
+*.keystore
+**/key.properties
+**/*service-account*.json
