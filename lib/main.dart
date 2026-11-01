@@ -13,7 +13,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF102B46),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF49D5BC),
+          brightness: Brightness.dark),
+      ),
       debugShowCheckedModeBanner: false,
       home: UpdateGate(),
     );

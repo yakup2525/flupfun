@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'ad_pacing.dart';
+import 'ad_configuration.dart';
 
 class MonetizationService extends ChangeNotifier with WidgetsBindingObserver {
   static final instance = MonetizationService._();
@@ -31,14 +32,23 @@ class MonetizationService extends ChangeNotifier with WidgetsBindingObserver {
   bool get fullscreen => _fullscreen;
 
   Future<void> start() async {
-    if (_started || defaultTargetPlatform != TargetPlatform.android) return;
+    if (_started ||
+        kIsWeb ||
+        !{
+          TargetPlatform.android,
+          TargetPlatform.iOS,
+        }.contains(defaultTargetPlatform)) {
+      return;
+    }
     _started = true;
     WidgetsBinding.instance.addObserver(this);
     try {
       _pacingStore = await Hive.openBox<String>('ad-pacing');
       final saved = _pacingStore?.get('impressions');
       if (saved != null) {
-        pacing.impressions.addAll(saved.split(',').map(DateTime.tryParse).whereType<DateTime>());
+        pacing.impressions.addAll(
+          saved.split(',').map(DateTime.tryParse).whereType<DateTime>(),
+        );
       }
       await MobileAds.instance.updateRequestConfiguration(
         RequestConfiguration(
@@ -110,17 +120,23 @@ class MonetizationService extends ChangeNotifier with WidgetsBindingObserver {
 
   void _preload() {
     if (_loading || _ad != null || !_initialized || _fullscreen) return;
-    if (kReleaseMode && _productionUnit.isEmpty) return;
+    final unit = interstitialUnitFor(
+      defaultTargetPlatform,
+      release: kReleaseMode,
+      androidProduction: _productionUnit,
+    );
+    if (unit == null) return;
     _loading = true;
     final generation = _loadGeneration;
     InterstitialAd.load(
-      adUnitId: kReleaseMode
-          ? _productionUnit
-          : 'ca-app-pub-3940256099942544/1033173712',
+      adUnitId: unit,
       request: const AdRequest(nonPersonalizedAds: true),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          if (generation != _loadGeneration || _privacyOpen) { ad.dispose(); return; }
+          if (generation != _loadGeneration || _privacyOpen) {
+            ad.dispose();
+            return;
+          }
           _loading = false;
           _loadedAt = DateTime.now();
           _ad = ad;
@@ -134,11 +150,20 @@ class MonetizationService extends ChangeNotifier with WidgetsBindingObserver {
 
   /// Called only from the game-over Play Again action, before restarting.
   Future<void> betweenRounds() async {
-    if (_opportunityBusy || _fullscreen || !_foreground || !pacing.eligible(DateTime.now())) return;
+    if (_opportunityBusy ||
+        _fullscreen ||
+        !_foreground ||
+        !pacing.eligible(DateTime.now())) {
+      return;
+    }
     _opportunityBusy = true;
     try {
-      if (!await ConsentInformation.instance.canRequestAds() || !_foreground) return;
-      if (_loadedAt != null && DateTime.now().difference(_loadedAt!) >= const Duration(minutes: 55)) {
+      if (!await ConsentInformation.instance.canRequestAds() || !_foreground) {
+        return;
+      }
+      if (_loadedAt != null &&
+          DateTime.now().difference(_loadedAt!) >=
+              const Duration(minutes: 55)) {
         _ad?.dispose();
         _ad = null;
       }
@@ -183,8 +208,13 @@ class MonetizationService extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> _savePacing() async {
     try {
-      await _pacingStore?.put('impressions', pacing.impressions.map((at) => at.toIso8601String()).join(','));
-    } catch (_) { /* A storage failure must not hold the fullscreen lock. */ }
+      await _pacingStore?.put(
+        'impressions',
+        pacing.impressions.map((at) => at.toIso8601String()).join(','),
+      );
+    } catch (_) {
+      /* A storage failure must not hold the fullscreen lock. */
+    }
   }
 
   @override

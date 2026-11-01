@@ -1,4 +1,5 @@
 import Flutter
+import GoogleMobileAds
 import UIKit
 
 @main
@@ -7,6 +8,8 @@ import UIKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Non-personalized iOS ads; no ATT request or publisher first-party ID.
+    MobileAds.shared.requestConfiguration.setPublisherFirstPartyIDEnabled(false)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 

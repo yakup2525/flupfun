@@ -25,6 +25,8 @@ dependencies:
   url_launcher: ^6.3.3
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 
@@ -40,7 +42,9 @@ flutter:
   assets:
 
     - assets/images/
-    - assets/sound/
+    - assets/sound/jump.wav
+    - assets/sound/sfx_point.wav
+    - assets/sound/sfx_hit.wav
     - assets/images/app_logo.png
 
 flutter_launcher_icons:

@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void startGame() {
     if (_restarting || MonetizationService.instance.fullscreen) return;
-    player.play(AssetSource('sound/jump.mp3'));
+    player.play(AssetSource('sound/jump.wav'));
 
     gameHasStarted = true;
     scorePermission = true;
@@ -189,11 +189,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> playJump() async {
     if (player.state == PlayerState.playing) {
-      player2.play(AssetSource('sound/jump.mp3'));
+      player2.play(AssetSource('sound/jump.wav'));
     } else if (player2.state == PlayerState.playing) {
-      player3.play(AssetSource('sound/jump.mp3'));
+      player3.play(AssetSource('sound/jump.wav'));
     } else {
-      player.play(AssetSource('sound/jump.mp3'));
+      player.play(AssetSource('sound/jump.wav'));
     }
   }
 
@@ -266,82 +266,84 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: gameHasStarted ? jump : startGame,
       child: Scaffold(
-        body: Column(
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                color: ColorConst.skyColor,
-                child: Center(
-                  child: Stack(
-                    children: [
-                      // bird
-                      MyBird(
-                        birdY: birdY,
-                        birdWidth: birdWidth,
-                        birdHeight: birdHeight,
-                        bird: !_dead
-                            ? ImageConstant.bird
-                            : ImageConstant.birdCrash,
-                      ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Container(
+                  color: ColorConst.skyColor,
+                  child: Center(
+                    child: Stack(
+                      children: [
+                        // bird
+                        MyBird(
+                          birdY: birdY,
+                          birdWidth: birdWidth,
+                          birdHeight: birdHeight,
+                          bird: !_dead
+                              ? ImageConstant.bird
+                              : ImageConstant.birdCrash,
+                        ),
 
-                      // tap to play
-                      MyCoverScreen(gameHasStarted: gameHasStarted),
+                        // tap to play
+                        MyCoverScreen(gameHasStarted: gameHasStarted),
 
-                      // Top barrier 0
-                      MyBarrier(
-                        barrierX: barrierX[0],
-                        barrierWidth: barrierWidth,
-                        barrierHeight: barrierHeight[0][0],
-                        isThisBottomBarrier: false,
-                      ),
+                        // Top barrier 0
+                        MyBarrier(
+                          barrierX: barrierX[0],
+                          barrierWidth: barrierWidth,
+                          barrierHeight: barrierHeight[0][0],
+                          isThisBottomBarrier: false,
+                        ),
 
-                      // Bottom barrier 0
-                      MyBarrier(
-                        barrierX: barrierX[0],
-                        barrierWidth: barrierWidth,
-                        barrierHeight: barrierHeight[0][1],
-                        isThisBottomBarrier: true,
-                      ),
+                        // Bottom barrier 0
+                        MyBarrier(
+                          barrierX: barrierX[0],
+                          barrierWidth: barrierWidth,
+                          barrierHeight: barrierHeight[0][1],
+                          isThisBottomBarrier: true,
+                        ),
 
-                      // Top barrier 1
-                      MyBarrier(
-                        barrierX: barrierX[1],
-                        barrierWidth: barrierWidth,
-                        barrierHeight: barrierHeight[1][0],
-                        isThisBottomBarrier: false,
-                      ),
+                        // Top barrier 1
+                        MyBarrier(
+                          barrierX: barrierX[1],
+                          barrierWidth: barrierWidth,
+                          barrierHeight: barrierHeight[1][0],
+                          isThisBottomBarrier: false,
+                        ),
 
-                      // Bottom barrier 1
-                      MyBarrier(
-                        barrierX: barrierX[1],
-                        barrierWidth: barrierWidth,
-                        barrierHeight: barrierHeight[1][1],
-                        isThisBottomBarrier: true,
-                      ),
-                      if (!gameHasStarted)
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: SafeArea(
-                            child: IconButton(
-                              tooltip: 'Settings',
-                              icon: const Icon(Icons.settings),
-                              onPressed: () => Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const SettingsPage(),
+                        // Bottom barrier 1
+                        MyBarrier(
+                          barrierX: barrierX[1],
+                          barrierWidth: barrierWidth,
+                          barrierHeight: barrierHeight[1][1],
+                          isThisBottomBarrier: true,
+                        ),
+                        if (!gameHasStarted)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: SafeArea(
+                              child: IconButton(
+                                tooltip: 'Settings',
+                                icon: const Icon(Icons.settings),
+                                onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const SettingsPage(),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            GameDashboard(score: score, best: best),
-          ],
+              GameDashboard(score: score, best: best),
+            ],
+          ),
         ),
       ),
     );

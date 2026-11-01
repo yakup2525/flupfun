@@ -37,7 +37,7 @@ class UpdateService extends ChangeNotifier {
       compareVersions(installedVersion!, minimumVersion!) < 0;
 
   Future<void> check() async {
-    if (checking) return;
+    if (checking || defaultTargetPlatform != TargetPlatform.android) return;
     checking = true;
     HttpClient? client;
     try {
