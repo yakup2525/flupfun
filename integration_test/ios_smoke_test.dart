@@ -11,7 +11,7 @@ void main() {
   testWidgets('iOS launch, settings, gameplay and restart', (tester) async {
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 2));
-    expect(find.text('FLUP FUN'), findsOneWidget);
+    expect(find.text('T A P  T O  P L A Y'), findsOneWidget);
     await binding.takeScreenshot('01-welcome');
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
@@ -49,7 +49,7 @@ void main() {
     expect(find.text('PLAY AGAIN'), findsOneWidget);
     await tester.tap(find.text('PLAY AGAIN'));
     await tester.pumpAndSettle();
-    expect(find.text('FLUP FUN'), findsOneWidget);
+    expect(find.text('T A P  T O  P L A Y'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

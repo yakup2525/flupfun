@@ -58,7 +58,7 @@ void main() {
         }
       });
       await tester.pumpAndSettle();
-      expect(find.text('FLUP FUN'), findsOneWidget);
+      expect(find.text('T A P  T O  P L A Y'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
     skip: !const bool.fromEnvironment('FLUP_AD_TEST'),

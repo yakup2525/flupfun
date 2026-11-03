@@ -42,9 +42,7 @@ flutter:
   assets:
 
     - assets/images/
-    - assets/sound/jump.wav
-    - assets/sound/sfx_point.wav
-    - assets/sound/sfx_hit.wav
+    - assets/sound/
     - assets/images/app_logo.png
 
 flutter_launcher_icons:

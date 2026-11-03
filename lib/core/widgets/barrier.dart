@@ -8,30 +8,20 @@ class MyBarrier extends StatelessWidget {
   final double barrierX;
   final bool isThisBottomBarrier;
 
-  const MyBarrier({
-    super.key,
-    required this.barrierHeight,
-    required this.barrierWidth,
-    required this.isThisBottomBarrier,
-    required this.barrierX,
-  });
+  const MyBarrier(
+      {super.key,
+      required this.barrierHeight,
+      required this.barrierWidth,
+      required this.isThisBottomBarrier,
+      required this.barrierX});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment(
-        (2 * barrierX + barrierWidth) / (2 - barrierWidth),
-        isThisBottomBarrier ? 1 : -1,
-      ),
+      alignment: Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth),
+          isThisBottomBarrier ? 1 : -1),
       child: Container(
-        decoration: BoxDecoration(
-          color: ColorConst.barrierColor,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(isThisBottomBarrier ? 18 : 0),
-            bottom: Radius.circular(isThisBottomBarrier ? 0 : 18),
-          ),
-          border: Border.all(color: const Color(0xFF9DF1DE), width: 2),
-        ),
+        color: ColorConst.barrierColor,
         width: MediaQuery.of(context).size.width * barrierWidth / 2,
         height: MediaQuery.of(context).size.height * 3 / 4 * barrierHeight / 2,
       ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
 import '/ui/ui.dart';
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   void startGame() {
     if (_restarting || MonetizationService.instance.fullscreen) return;
-    player.play(AssetSource('sound/jump.wav'));
+    player.play(AssetSource('sound/jump.mp3'));
 
     gameHasStarted = true;
     scorePermission = true;
@@ -189,11 +190,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   Future<void> playJump() async {
     if (player.state == PlayerState.playing) {
-      player2.play(AssetSource('sound/jump.wav'));
+      player2.play(AssetSource('sound/jump.mp3'));
     } else if (player2.state == PlayerState.playing) {
-      player3.play(AssetSource('sound/jump.wav'));
+      player3.play(AssetSource('sound/jump.mp3'));
     } else {
-      player.play(AssetSource('sound/jump.wav'));
+      player.play(AssetSource('sound/jump.mp3'));
     }
   }
 
@@ -267,6 +268,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       onTap: gameHasStarted ? jump : startGame,
       child: Scaffold(
         body: SafeArea(
+          top: defaultTargetPlatform == TargetPlatform.iOS,
+          bottom: defaultTargetPlatform == TargetPlatform.iOS,
+          left: defaultTargetPlatform == TargetPlatform.iOS,
+          right: defaultTargetPlatform == TargetPlatform.iOS,
           child: Column(
             children: [
               Expanded(
